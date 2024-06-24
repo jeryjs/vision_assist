@@ -1,3 +1,3 @@
-# vision_assist
+# Vision Assist
 
 A new Flutter project.
