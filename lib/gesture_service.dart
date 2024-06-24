@@ -38,13 +38,32 @@ class GestureService {
     }
   }
 
+  Future<String> _getNextModelDataFolderPath() async {
+    final baseDir = Directory('/sdcard/model_data');
+    if (!baseDir.existsSync()) {
+      baseDir.createSync();
+    }
+
+    var nextFolderIndex = 0;
+    while (Directory('${baseDir.path}/$nextFolderIndex').existsSync()) {
+      nextFolderIndex++;
+    }
+
+    final nextFolderPath = '${baseDir.path}/$nextFolderIndex';
+    Directory(nextFolderPath).createSync();
+
+    return nextFolderPath;
+  }
+
   Future<Uint8List> extractAudioData(File video) async {
-    final String outputPath = "${video.parent.path}/audio.aac";
+    // final String outputPath = "${video.parent.path}/audio.aac";
+    final modelDataPath = await _getNextModelDataFolderPath();
+    final String outputPath = '$modelDataPath/audio.aac';
     final File outputFile = File(outputPath);
 
-    if (outputFile.existsSync()) {
-      outputFile.deleteSync();
-    }
+    // if (outputFile.existsSync()) {
+    //   outputFile.deleteSync();
+    // }
 
     final String command = "-i ${video.path} -vn -acodec copy $outputPath";
     int rc = await _ffmpeg.execute(command);
@@ -54,19 +73,19 @@ class GestureService {
     }
 
     Uint8List bytes = outputFile.readAsBytesSync();
-    outputFile.deleteSync();
+    // outputFile.deleteSync();
 
     return bytes;
   }
 
   Future<List<Uint8List>> extractFramesData(File video, {int fps = 3}) async {
-    final frames = <Uint8List>[];
-    final directory = "${video.parent.path}/frames";
+    final modelDataPath = await _getNextModelDataFolderPath();
+    final directory = '$modelDataPath/frames';
     final Directory framesDirectory = Directory(directory);
 
-    if (framesDirectory.existsSync()) {
-      framesDirectory.deleteSync(recursive: true);
-    }
+    // if (framesDirectory.existsSync()) {
+    //   framesDirectory.deleteSync(recursive: true);
+    // }
 
     framesDirectory.createSync(recursive: true);
 
@@ -77,16 +96,18 @@ class GestureService {
       throw Exception('Failed to extract frames from video');
     }
 
+
     // get the frames for only first 30 seconds
+    final frames = <Uint8List>[];
     for (var i = 1; i <= fps*30; i++) {
       final file = File("$directory/out_$i.jpg");
       if (file.existsSync()) {
         frames.add(file.readAsBytesSync());
-        file.deleteSync();
+        // file.deleteSync();
       }
     }
 
-    framesDirectory.deleteSync();
+    // framesDirectory.deleteSync();
 
     return frames;
   }
