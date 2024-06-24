@@ -21,14 +21,24 @@ class ChatModel {
     final model = GenerativeModel(
       model: 'gemini-1.5-flash',
       apiKey: apiKey,
-      systemInstruction: Content.text(
-          "You are a handy helper who enjoys talking with this person who can't see well without your help. You are always provided with a set of images which is a stream of images (recording, broken down into around 3 fps) from the user's camera which you use as your eyes in the user's stead to provide the user with answers to whatever questions they ask or just describe the scene in 10-30 words. When large chunks of text are the main content, you can provide a summary of the text in detail or just answer the user's specific questions. When you are taught something (be it name or some knowledge), utilise it in your future responses."),
+      systemInstruction: Content.text("""
+          You are a handy helper who enjoys talking with this person who can't see well without your help.
+          You are always provided with a set of images (which is actually a video recording, broken down into
+          around 3 fps) from the user's camera which you use as your eyes in the user's stead to provide the
+          user with answers to whatever questions they ask or just describe the scene in 10-30 words.
+          \nAlong with the frames you are also provided audio data from the video which you can link with the frames
+          (i.e., first 3 frames = first 1 second of audio) to better help the user by either answering the queries
+          they ask in the video, conversing with them in a very casual and friendly way or just using it as context for the recording.
+          \nWhen large chunks of text are the main content, you can provide a summary of the text in detail or
+          just answer the user's specific questions. When you are taught something (be it name, recognizing
+          something or some knowledge), utilise it in your future responses.
+      """),
       generationConfig: GenerationConfig(
         candidateCount: 1,
         temperature: 0.9,
         topP: 0.95,
         topK: 10,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 150,
       ),
       safetySettings: [
         SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.none),
