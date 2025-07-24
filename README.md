@@ -1,6 +1,6 @@
 # Vision Assist
 
-Vision Assist is a groundbreaking Flutter application that brings video understanding and assistive technology to the forefront—pioneering a space where even major LLMs like ChatGPT had yet to venture in 2023. This project is designed for those passionate about real-world AI applications, accessibility, and technical innovation.
+Vision Assist is a groundbreaking Flutter application that brings video understanding and assistive technology to the forefront—pioneering a space where even major LLMs like ChatGPT had yet to venture in 2023. This project served as a proof-of-concept mobile application for AI Video understanding through progressive image streams.
 
 ## 🚀 Project Vision
 
